@@ -1,4 +1,4 @@
-import { createWalletClient, custom } from 'viem'
+import { createWalletClient, http } from 'viem'
 import { mainnet } from 'viem/chains'
 
 export const createConsentMessage = (peerAddress: string,
@@ -16,7 +16,7 @@ export const createConsentMessage = (peerAddress: string,
 
 export const walletClient = createWalletClient({
   chain: mainnet,
-  transport: custom((window as any).ethereum!),
+  transport: http(),
 })
 
 export const connectWallet = async () => {
