@@ -7,19 +7,24 @@ export const createConsentMessage = (peerAddress: string,
   return (
     'XMTP : Grant inbox consent to sender\n' +
     '\n' +
-    `Current Time: ${timestamp}\n` +
+    `Current Time: ${new Date(timestamp).toUTCString()}\n` +
     `From Address: ${peerAddress}\n` +
     '\n' +
     'For more info: https://xmtp.org/signatures/'
   )
 }
 
+const transport = typeof window !== 'undefined' ? custom((window as any).ethereum!) : http()
+console.log('transport', transport)
+console.log('window type',  typeof window !== 'undefined')
+
 export const walletClient = createWalletClient({
   chain: mainnet,
-  transport: typeof window !== "undefined" ? custom((window as any).ethereum!) : http(),
+  transport,
 })
 
 export const connectWallet = async () => {
-  const [account] = await walletClient.getAddresses()
-  return account
+  const addresses = await walletClient.getAddresses()
+  console.log('addresses', addresses)
+  return addresses[0]
 };
