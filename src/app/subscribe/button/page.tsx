@@ -1,10 +1,12 @@
 'use client'
 
 import { CSSProperties, useState } from "react";
-import { createConsentMessage, connectWallet, walletClient } from "./utils";
+import { createConsentMessage, createConsentProofPayload} from "@xmtp/consent-proof-signature"
+import { connectWallet, walletClient } from "./utils";
 import { broadcastConfigs } from "../broadcastConfigs";
 
 const {address: broadcastAddress, name} = broadcastConfigs[0]
+const host = process.env.API_HOST || 'https://broadcast-api.vercel.app'
 
 enum ErrorStates {
   NO_WALLET = 'NO_WALLET',
@@ -76,7 +78,7 @@ export default function SubscribeButton() {
       if (!address) {
         throw new Error(ErrorStates.NO_WALLET);
       }
-      const lookupResponse = await fetch('http://localhost:6989/lookup', {
+      const lookupResponse = await fetch(`${host}/lookup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -96,8 +98,10 @@ export default function SubscribeButton() {
         account: address,
         message,
       })
+      const payloadBytes = createConsentProofPayload(signature, timestamp)
+      const base64Payload = Buffer.from(payloadBytes).toString('base64')
 
-      const subscribeResponse = await fetch('http://localhost:6989/subscribe', {
+      const subscribeResponse = await fetch(`${host}/subscribe`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -107,6 +111,7 @@ export default function SubscribeButton() {
             signature,
             timestamp,
             broadcastAddress,
+            consentProof: base64Payload
           })
         });
       await subscribeResponse.json();

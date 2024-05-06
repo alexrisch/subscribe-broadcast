@@ -5,8 +5,8 @@ interface BroadcastConfig {
 
 export const broadcastConfigs: BroadcastConfig[] = [
   {
-    name: "Good Morning XMTP",
-    address: "0x85583261a4c3ad6785Ac90BD8880393831F97F54",
+    name: "the Wrap Up XMTP Broadcast",
+    address: "0x83A5D283F5B8c4D2c1913EA971a3B7FD8473F446",
   },
 ];
 

@@ -561,6 +561,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xmtp/consent-proof-signature@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@xmtp/consent-proof-signature@npm:0.1.2"
+  dependencies:
+    "@xmtp/proto": "npm:3.56.0"
+    long: "npm:^5.2.3"
+  checksum: 10c0/c6fbc8aa0d89fa3fb346a7c62dcf9acbdbc8d8def688e12fdf0766b4077655b8b90ac6a4b67b57cdc431894a2311659d7ec02dc46d9238326a931a55ccf5e922
+  languageName: node
+  linkType: hard
+
 "@xmtp/proto@npm:3.45.0":
   version: 3.45.0
   resolution: "@xmtp/proto@npm:3.45.0"
@@ -570,6 +580,18 @@ __metadata:
     rxjs: "npm:^7.8.0"
     undici: "npm:^5.8.1"
   checksum: 10c0/fb04f27443f6893c668bbad62a015ff7c5706ddd563da26fbf88f478486035c55d41220d8023d4d52316cd2d7a9c2e3c33e3aeda07433abe3896482f78b95c30
+  languageName: node
+  linkType: hard
+
+"@xmtp/proto@npm:3.56.0":
+  version: 3.56.0
+  resolution: "@xmtp/proto@npm:3.56.0"
+  dependencies:
+    long: "npm:^5.2.0"
+    protobufjs: "npm:^7.0.0"
+    rxjs: "npm:^7.8.0"
+    undici: "npm:^5.8.1"
+  checksum: 10c0/46232c69eb793fe7df91b803503892b67aa11f45c087b133e6926a471fb9b63dc4d26e085041853d3b5dbd7b53cbe75b474371eada8980ca0752bb7945fdc5bf
   languageName: node
   linkType: hard
 
@@ -957,6 +979,7 @@ __metadata:
     "@types/node": "npm:^20"
     "@types/react": "npm:^18"
     "@types/react-dom": "npm:^18"
+    "@xmtp/consent-proof-signature": "npm:^0.1.2"
     "@xmtp/xmtp-js": "npm:^11.5.1"
     eslint: "npm:^8"
     eslint-config-next: "npm:14.2.1"

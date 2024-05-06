@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@xmtp/consent-proof-signature": "^0.1.2",
     "@xmtp/xmtp-js": "^11.5.1",
     "next": "14.2.1",
     "react": "^18",
