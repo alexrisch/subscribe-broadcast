@@ -15,14 +15,14 @@ import { broadcastConfigs } from "../broadcastConfigs";
 const queryClient = new QueryClient()
 
 // 1. Get projectId
-const projectId = process.env.WALLET_CONNECT_ID ?? "";
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID ?? "";
 
 // 2. Create wagmiConfig
 const metadata = {
   name: "Web3Modal",
   description: "Web3Modal Example",
   url: "https://web3modal.com",
-  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+  icons: ["https://avatars.githubusercontent.com/u/82580170"],
 };
 
 const chains = [mainnet, arbitrum] as const
@@ -36,8 +36,6 @@ const config = defaultWagmiConfig({
 createWeb3Modal({
   wagmiConfig: config,
   projectId,
-  enableAnalytics: true, // Optional - defaults to your Cloud configuration
-  enableOnramp: true // Optional - false as default
 })
 
 
