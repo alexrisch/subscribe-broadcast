@@ -1,12 +1,48 @@
 'use client'
 
-import { CSSProperties, useState } from "react";
+import { CSSProperties, useCallback, useState } from "react";
 import { createConsentMessage, createConsentProofPayload} from "@xmtp/consent-proof-signature"
-import { connectWallet, walletClient } from "./utils";
+import { createWeb3Modal, useWeb3Modal } from '@web3modal/wagmi/react'
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
+
+import { useAccount, WagmiProvider } from 'wagmi'
+import { arbitrum, mainnet } from 'wagmi/chains'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+import { walletClient } from "./utils";
 import { broadcastConfigs } from "../broadcastConfigs";
 
+const queryClient = new QueryClient()
+
+// 1. Get projectId
+const projectId = process.env.WALLET_CONNECT_ID ?? "";
+
+// 2. Create wagmiConfig
+const metadata = {
+  name: "Web3Modal",
+  description: "Web3Modal Example",
+  url: "https://web3modal.com",
+  icons: ["https://avatars.githubusercontent.com/u/37784886"],
+};
+
+const chains = [mainnet, arbitrum] as const
+const config = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
+})
+
+// 3. Create modal
+createWeb3Modal({
+  wagmiConfig: config,
+  projectId,
+  enableAnalytics: true, // Optional - defaults to your Cloud configuration
+  enableOnramp: true // Optional - false as default
+})
+
+
 const {address: broadcastAddress, name} = broadcastConfigs[0]
-const host = process.env.API_HOST || 'https://broadcast-api.vercel.app'
+const host = process.env.API_HOST || 'https://broadcast-api-production-8513.up.railway.app'
 
 enum ErrorStates {
   NO_WALLET = 'NO_WALLET',
@@ -62,19 +98,20 @@ const getErrorMessage = (error: ErrorStates) => {
   }
 };
 
-export default function SubscribeButton() {
+const SubscribeButton = () => {
   // State for loading status
   const [loading, setLoading] = useState(false);
   const [subscriptionStatus, setSubscriptionStatus] = useState(false);
   const [errorState, setErrorState] = useState<ErrorStates | null>(null);
+  const {address, isDisconnected} = useAccount();
+  const { open } = useWeb3Modal();
 
   // Define the handleClick function
-  const handleClick = async () => {
+  const handleSigning = useCallback(async () => {
     try {
       setLoading(true);
       setErrorState(null);
       // Get the subscriber
-      const address = await connectWallet();
       if (!address) {
         throw new Error(ErrorStates.NO_WALLET);
       }
@@ -137,7 +174,11 @@ export default function SubscribeButton() {
       }
       setLoading(false);
     }
-  }; 
+  }, [address]); 
+
+  const handleButtonClick = useCallback(() => {
+    isDisconnected ? open() : handleSigning();
+  }, [isDisconnected, handleSigning, open]);
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
@@ -145,7 +186,7 @@ export default function SubscribeButton() {
         style={styles.SubscribeButtonContainer}
         className={`Subscribe ${loading ? "loading" : ""}`}>
           Subscribe to {name}
-        <button style={styles.SubscribeButton} onClick={handleClick}>
+        <button style={styles.SubscribeButton} onClick={handleButtonClick}>
           {subscriptionStatus ? "Subscribed" : loading ? "Loading... " : 'Subscribe'}
         </button>
         <div>
@@ -153,6 +194,16 @@ export default function SubscribeButton() {
         </div>
       </div>
     </main>
+  );
+};
+
+export default function SubscribeButtonPage() {
+  return (
+    <WagmiProvider config={config}>
+      <QueryClientProvider client={queryClient}>
+        <SubscribeButton />
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 }
 

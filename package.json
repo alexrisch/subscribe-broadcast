@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.35.1",
+    "@web3modal/wagmi": "^4.1.11",
     "@xmtp/consent-proof-signature": "^0.1.2",
-    "@xmtp/xmtp-js": "^11.5.1",
     "next": "14.2.1",
     "react": "^18",
     "react-dom": "^18",
-    "viem": "^2.9.20"
+    "viem": "^2.9.32",
+    "wagmi": "^2.8.1"
   },
   "devDependencies": {
     "@types/node": "^20",
