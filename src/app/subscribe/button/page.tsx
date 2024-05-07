@@ -1,6 +1,6 @@
 'use client'
 
-import { CSSProperties, useCallback, useState } from "react";
+import { ChangeEventHandler, CSSProperties, useCallback, useMemo, useState } from "react";
 import { createConsentMessage, createConsentProofPayload} from "@xmtp/consent-proof-signature"
 import { createWeb3Modal, useWeb3Modal } from '@web3modal/wagmi/react'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
@@ -38,8 +38,6 @@ createWeb3Modal({
   projectId,
 })
 
-
-const {address: broadcastAddress, name} = broadcastConfigs[0]
 const host = process.env.NEXT_PUBLIC_API_HOST || 'https://broadcast-api-production-8513.up.railway.app'
 
 enum ErrorStates {
@@ -79,6 +77,20 @@ const styles: Record<string, CSSProperties> = {
     fontSize: "12px",
     marginTop: "5px",
   },
+  BroadcastDropdownContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginBottom: "10px",
+  },
+  Dropdown: {
+    padding: "10px",
+    borderRadius: "5px",
+    border: "1px solid #ededed",
+    fontSize: "12px",
+    backgroundColor: "#ededed",
+    color: "#333333",
+  },
 };
 
 const getErrorMessage = (error: ErrorStates) => {
@@ -103,6 +115,11 @@ const SubscribeButton = () => {
   const [errorState, setErrorState] = useState<ErrorStates | null>(null);
   const {address, isDisconnected} = useAccount();
   const { open } = useWeb3Modal();
+  const [selectedBroadcast, setSelectedBroadcast] = useState(broadcastConfigs[0].address);
+
+  const {address: broadcastAddress, name} = useMemo(() => {
+    return broadcastConfigs.find(({ address }) => address === selectedBroadcast) ?? broadcastConfigs[0];
+  }, [selectedBroadcast]);
 
   // Define the handleClick function
   const handleSigning = useCallback(async () => {
@@ -170,14 +187,28 @@ const SubscribeButton = () => {
       }
       setLoading(false);
     }
-  }, [address]); 
+  }, [address, broadcastAddress]); 
 
   const handleButtonClick = useCallback(() => {
     isDisconnected ? open() : handleSigning();
   }, [isDisconnected, handleSigning, open]);
 
+  const handleDropdownChange: ChangeEventHandler<HTMLSelectElement> = useCallback((event) => {
+    setSelectedBroadcast(event.target.value);
+  }, [setSelectedBroadcast]);
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="flex min-h-screen flex-col items-center p-24">
+      <div style={styles.BroadcastDropdownContainer}>
+        <label htmlFor="config-dropdown">Choose a Broadcast:</label>
+        <select style={styles.Dropdown} id="config-dropdown" value={selectedBroadcast} onChange={handleDropdownChange}>
+          {broadcastConfigs.map(config => (
+            <option key={config.address} value={config.address}>
+              {config.name}
+            </option>
+          ))}
+        </select>
+      </div>
       <div
         style={styles.SubscribeButtonContainer}
         className={`Subscribe ${loading ? "loading" : ""}`}>
