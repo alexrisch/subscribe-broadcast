@@ -40,7 +40,7 @@ createWeb3Modal({
 
 
 const {address: broadcastAddress, name} = broadcastConfigs[0]
-const host = process.env.API_HOST || 'https://broadcast-api-production-8513.up.railway.app'
+const host = process.env.NEXT_PUBLIC_API_HOST || 'https://broadcast-api-production-8513.up.railway.app'
 
 enum ErrorStates {
   NO_WALLET = 'NO_WALLET',
@@ -143,8 +143,6 @@ const SubscribeButton = () => {
           },
           body: JSON.stringify({
             address,
-            signature,
-            timestamp,
             broadcastAddress,
             consentProof: base64Payload
           })
