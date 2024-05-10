@@ -38,7 +38,7 @@ createWeb3Modal({
   projectId,
 })
 
-const host = process.env.NEXT_PUBLIC_API_HOST || ''
+const host = process.env.NEXT_PUBLIC_API_HOST || "";
 
 enum ErrorStates {
   NO_WALLET = 'NO_WALLET',
